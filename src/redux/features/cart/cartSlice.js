@@ -1,30 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const loadCartFromLocalStorage = () => {
-    try {
-      const cartData = localStorage.getItem("cart");
-      if (cartData) {
-        return JSON.parse(cartData);
-      }
-    } catch (error) {
-      console.error("Error loading cart from local storage:", error);
-    }
-    return {
-      products: [],
-      total: 0,
-    };
-  };
-  
-  const saveCartToLocalStorage = (cart) => {
-    try {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    } catch (error) {
-      console.error("Error saving cart to local storage:", error);
-    }
-  };
-  
-  const initialState = loadCartFromLocalStorage();
 
+
+const initialState = {
+  products: [],
+  total: 0,
+};
 
 export const cartSlice = createSlice({
   name: "cart",
@@ -39,11 +20,8 @@ export const cartSlice = createSlice({
       } else {
         state.products.push({ ...actions.payload, quantity: 1 });
       }
-      
-      // state.total += actions.payload.price;
-      state.total = Number(state.total) + Number(actions.payload.price);
-      saveCartToLocalStorage(state);
 
+      state.total = Number(state.total) + Number(actions.payload.price);
     },
 
     removeSingle: (state, actions) => {
@@ -59,9 +37,6 @@ export const cartSlice = createSlice({
       }
 
       state.total = Number(state.total) - Number(actions.payload.price);
-      saveCartToLocalStorage(state);
-
-      // state.total -= actions.payload.price;
     },
 
     removeFromCart: (state, actions) => {
@@ -69,9 +44,9 @@ export const cartSlice = createSlice({
         (product) => product._id !== actions.payload._id
       );
 
-      state.total = Number(state.total) - Number(actions.payload.price) * Number(actions.payload.quantity);
-      saveCartToLocalStorage(state);
-      // state.total -= actions.payload.price * actions.payload.quantity;
+      state.total =
+        Number(state.total) -
+        Number(actions.payload.price) * Number(actions.payload.quantity);
     },
   },
 });
